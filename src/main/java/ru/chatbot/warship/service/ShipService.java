@@ -1,11 +1,8 @@
 package ru.chatbot.warship.service;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.chatbot.warship.bot.WarshipBot;
-import ru.chatbot.warship.config.DatabaseConfig;
 import ru.chatbot.warship.entity.Ship;
 import ru.chatbot.warship.entity.ShipType;
 
@@ -13,8 +10,12 @@ import ru.chatbot.warship.entity.ShipType;
  * Created by givorenon on 31.01.17.
  */
 public class ShipService {
-    private JdbcTemplate jdbcTemplate = (JdbcTemplate) WarshipBot.context.getBean("jdbcTemplate");
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
     private final static String GET_SHIP_BY_ID_SQL = "select s.id as ID, s.owner_id as OWNER_ID," +
             "s.name as NAME, s.speed as SPEED, s.power as POWER, s.tonnage as TONNAGE, " +
             "st.name as TYPE_NAME, s.employed as EMPLOYED, s.location as LOCATION " +

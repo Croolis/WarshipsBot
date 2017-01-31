@@ -1,12 +1,8 @@
 package ru.chatbot.warship.service;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.chatbot.warship.bot.WarshipBot;
-import ru.chatbot.warship.config.DatabaseConfig;
-import ru.chatbot.warship.config.ServiceConfig;
 import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Ship;
 import ru.chatbot.warship.entity.Team;
@@ -15,8 +11,19 @@ import ru.chatbot.warship.entity.Team;
  * Created by givorenon on 31.01.17.
  */
 public class PlayerService {
-    private JdbcTemplate jdbcTemplate = (JdbcTemplate) WarshipBot.context.getBean("jdbcTemplate");
-    private ShipService shipService = (ShipService) WarshipBot.context.getBean("shipService");
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Autowired
+    private ShipService shipService;
+
+    public void setShipService(ShipService shipService) {
+        this.shipService = shipService;
+    }
 
     private static final String GET_PLAYER_BY_ID_SQL = "select ID, NICKNAME, TEAM, GOLD from PLAYER where ID = ?";
     private static final String INSERT_PLAYER_SQL = "insert into PLAYER (ID, NICKNAME, TEAM, GOLD) values(?, ?, ?, 0)";

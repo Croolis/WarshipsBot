@@ -3,12 +3,14 @@ package ru.chatbot.warship.handler;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
-import ru.chatbot.warship.bot.WarshipBot;
-import ru.chatbot.warship.config.ServiceConfig;
 import ru.chatbot.warship.entity.Team;
 import ru.chatbot.warship.service.PlayerService;
 
@@ -16,16 +18,23 @@ import ru.chatbot.warship.service.PlayerService;
  * Created by givorenon on 30.01.17.
  */
 
-
+@Repository
 public class ChooseTeamHandler implements Handler {
-    private PlayerService playerService = (PlayerService) WarshipBot.context.getBean("playerService");
+    @Autowired
+    private PlayerService playerService;
+
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
+    }
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private List<Team> teams = Arrays.asList(Team.values());
-    private ApplicationContext context;
-
-    public ChooseTeamHandler(ApplicationContext context) {
-        this.context = context;
-    }
 
     private boolean matchCommand(Update update) {
         return playerService.getPlayer(update.getMessage().getFrom().getId()) == null;

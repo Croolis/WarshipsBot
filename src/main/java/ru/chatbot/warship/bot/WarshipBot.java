@@ -3,29 +3,44 @@ package ru.chatbot.warship.bot;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
-import ru.chatbot.warship.config.DatabaseConfig;
-import ru.chatbot.warship.config.ServiceConfig;
 import ru.chatbot.warship.handler.ChooseTeamHandler;
 import ru.chatbot.warship.handler.Handler;
 import ru.chatbot.warship.handler.PlayerInfoHandler;
+import ru.chatbot.warship.service.PlayerService;
+import ru.chatbot.warship.service.ShipService;
 
 /**
  * Created by givorenon on 30.01.17.
  */
-
+@Configurable
 public class WarshipBot extends TelegramLongPollingBot {
-    public static ApplicationContext context = new AnnotationConfigApplicationContext(DatabaseConfig.class, ServiceConfig.class);
 
     private List<Handler> handlers;
+    @Autowired
+    PlayerInfoHandler playerInfoHandler;
+    @Autowired
+    ChooseTeamHandler chooseTeamHandler;
+
+    public void setPlayerInfoHandler(PlayerInfoHandler playerInfoHandler) {
+        this.playerInfoHandler = playerInfoHandler;
+    }
+
+    public void setChooseTeamHandler(ChooseTeamHandler chooseTeamHandler) {
+        this.chooseTeamHandler = chooseTeamHandler;
+    }
+
+    public void setHandlers(List<Handler> handlers) {
+        this.handlers = handlers;
+    }
 
     public WarshipBot() {
-        this.handlers = Arrays.asList(new Handler[]{new ChooseTeamHandler(), new PlayerInfoHandler(context)});
+        this.handlers = Arrays.asList(new Handler[]{chooseTeamHandler, playerInfoHandler});
     }
 
     public void onUpdateReceived(Update update) {

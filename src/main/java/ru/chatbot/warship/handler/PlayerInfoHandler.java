@@ -1,10 +1,8 @@
 package ru.chatbot.warship.handler;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
-import ru.chatbot.warship.bot.WarshipBot;
 import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Ship;
 import ru.chatbot.warship.service.PlayerService;
@@ -15,8 +13,19 @@ import ru.chatbot.warship.service.ShipService;
  * Created by givorenon on 31.01.17.
  */
 public class PlayerInfoHandler implements Handler {
-    private PlayerService playerService = (PlayerService) WarshipBot.context.getBean("playerService");
-    private ShipService shipService = (ShipService) WarshipBot.context.getBean("shipService");
+    @Autowired
+    private ShipService shipService;
+
+    public void setShipService(ShipService shipService) {
+        this.shipService = shipService;
+    }
+
+    @Autowired
+    private PlayerService playerService;
+
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
+    }
 
     private boolean matchCommand(Update update) {
         return update.getMessage().getText().equals("INFO");

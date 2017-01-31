@@ -1,5 +1,6 @@
 package ru.chatbot.warship;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -10,6 +11,7 @@ import ru.chatbot.warship.bot.WarshipBot;
  */
 
 public class Main {
+
     public Main() {
     }
 
