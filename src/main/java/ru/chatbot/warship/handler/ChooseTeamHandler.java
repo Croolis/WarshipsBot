@@ -2,26 +2,33 @@ package ru.chatbot.warship.handler;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import ru.chatbot.warship.bot.WarshipBot;
+import ru.chatbot.warship.config.ServiceConfig;
 import ru.chatbot.warship.entity.Team;
-import ru.chatbot.warship.handler.AbstractHandler;
-import ru.chatbot.warship.handler.Handler;
+import ru.chatbot.warship.service.PlayerService;
 
 /**
  * Created by givorenon on 30.01.17.
  */
 
 
-public class ChooseTeamHandler extends AbstractHandler implements Handler {
-    private static final String CREATE_PLAYER_SQL = "INSERT INTO PLAYER (ID, NICKNAME, TEAM, GOLD) values(?, ?, ?, 0)";
-    private List<Team> teams = Arrays.asList(Team.values());
+public class ChooseTeamHandler implements Handler {
+    private PlayerService playerService = (PlayerService) WarshipBot.context.getBean("playerService");
 
-    public ChooseTeamHandler() {
+    private List<Team> teams = Arrays.asList(Team.values());
+    private ApplicationContext context;
+
+    public ChooseTeamHandler(ApplicationContext context) {
+        this.context = context;
     }
 
     private boolean matchCommand(Update update) {
-        return this.getPlayer(update) == null;
+        return playerService.getPlayer(update.getMessage().getFrom().getId()) == null;
     }
 
     public SendMessage handle(Update update) {
@@ -30,12 +37,11 @@ public class ChooseTeamHandler extends AbstractHandler implements Handler {
         } else {
             Integer userID = update.getMessage().getFrom().getId();
             String nickname = update.getMessage().getFrom().getUserName();
-            this.getPlayer(update);
 
             try {
-                Team e = Team.valueOf(update.getMessage().getText());
-                this.jdbcTemplate.update(CREATE_PLAYER_SQL, new Object[]{userID, nickname, e.getTeamId()});
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("You successfuly joined team " + e.toString());
+                Team team = Team.valueOf(update.getMessage().getText());
+                playerService.createPlayer(userID, nickname, team);
+                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("You successfuly joined team " + team.toString());
             } catch (IllegalArgumentException e) {
                 return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("To select team write one of " + this.teams.toString());
             }
