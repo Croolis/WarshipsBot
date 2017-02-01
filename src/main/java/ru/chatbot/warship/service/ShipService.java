@@ -16,28 +16,29 @@ public class ShipService {
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    private final static String GET_SHIP_BY_ID_SQL = "select s.id as ID, s.owner_id as OWNER_ID," +
-            "s.name as NAME, s.speed as SPEED, s.power as POWER, s.tonnage as TONNAGE, " +
-            "st.name as TYPE_NAME, s.employed as EMPLOYED, s.location as LOCATION " +
+    private final static String GET_SHIP_BY_ID_SQL = "select s.ID, s.OWNER_ID," +
+            "s.NAME, s.SPEED, s.POWER, s.TONNAGE, " +
+            "st.NAME as TYPE_NAME, s.EMPLOYED, s.LOCATION " +
             "from ship s, ship_type st " +
             "where s.id = ? and s.type_id = st.id";
-    private final static String GET_EMPLOYED_SHIP_SQL = "select s.id as ID, s.name as NAME, " +
-            "s.speed as SPEED, s.power as POWER, s.tonnage as TONNAGE, st.name as TYPE_NAME " +
+    private final static String GET_EMPLOYED_SHIP_SQL = "select s.ID, s.OWNER_ID," +
+            "s.NAME, s.SPEED, s.POWER, s.TONNAGE, " +
+            "st.NAME as TYPE_NAME, s.EMPLOYED, s.LOCATION " +
             "from ship s, ship_type st " +
             "where s.type_id = st.id " +
-            "s.owner_id = ? " +
+            "and s.owner_id = ? " +
             "and s.employed = 1";
     private final static String INSERT_SHIP_SQL = "insert into SHIP (OWNER_ID, NAME, TYPE_ID, SPEED, POWER, " +
             "TONNAGE, EMPLOYED, LOCATION) values(?, ?, ?, ?, ?, ?, 1, ?)";
-    private final static String UNEMPLOY_SHIP_SQL = "update SHIP s set EMPLOYED = 0 " +
-            "where s.owner_id = ? " +
-            "and s.employed = 1";
+    private final static String UNEMPLOY_SHIP_SQL = "update SHIP set EMPLOYED = 0 " +
+            "where owner_id = ? " +
+            "and employed = 1";
     private final static String GET_SHIP_TYPE_SQL = "select ID, NAME, MEAN_SPEED, SPEED_DEVIATION, " +
             "MEAN_POWER, POWER_DEVIATION, MEAN_TONNAGE, TONNAGE_DEVIATION from SHIP_TYPE where ID = ?";
 
     public Ship getShip(Long id) {
         try {
-            return this.jdbcTemplate.queryForObject(GET_SHIP_BY_ID_SQL, new Object[]{id}, new Ship.ShipRowMapper());
+            return jdbcTemplate.queryForObject(GET_SHIP_BY_ID_SQL, new Object[]{id}, new Ship.ShipRowMapper());
         } catch (DataAccessException e) {
             return null;
         }
@@ -48,7 +49,7 @@ public class ShipService {
     **/
     public Ship getEmployedShip(Integer userId) {
         try {
-            return this.jdbcTemplate.queryForObject(GET_EMPLOYED_SHIP_SQL, new Object[]{userId}, new Ship.ShipRowMapper());
+            return jdbcTemplate.queryForObject(GET_EMPLOYED_SHIP_SQL, new Object[]{userId}, new Ship.ShipRowMapper());
         } catch (DataAccessException e) {
             return null;
         }
@@ -59,8 +60,8 @@ public class ShipService {
         Long speed =  shipType.getMeanSpeed() + (long)((Math.random() - 0.5) * 2 * shipType.getSpeedDeviation());
         Long power = shipType.getMeanPower() + (long)((Math.random() - 0.5) * 2 * shipType.getPowerDeviation());
         Long tonnage = shipType.getMeanTonnage() + (long)((Math.random() - 0.5) * 2 * shipType.getTonnageDeviation());
-        this.jdbcTemplate.update(UNEMPLOY_SHIP_SQL);
-        this.jdbcTemplate.update(INSERT_SHIP_SQL, new Object[]{ownerId, shipName, typeId,
-                speed, power, tonnage, 1, locationId});
+        jdbcTemplate.update(UNEMPLOY_SHIP_SQL, ownerId);
+        jdbcTemplate.update(INSERT_SHIP_SQL, new Object[]{ownerId, shipName, typeId,
+                speed, power, tonnage, locationId});
     }
 }

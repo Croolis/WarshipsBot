@@ -1,6 +1,7 @@
 package ru.chatbot.warship;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -20,7 +21,11 @@ public class Main {
         TelegramBotsApi botsApi = new TelegramBotsApi();
 
         try {
-            botsApi.registerBot(new WarshipBot());
+            ApplicationContext context =
+                    new ClassPathXmlApplicationContext("bean.xml");
+
+            WarshipBot warshipBot = (WarshipBot) context.getBean("warshipBot");
+            botsApi.registerBot(warshipBot);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

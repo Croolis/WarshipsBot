@@ -3,7 +3,6 @@ package ru.chatbot.warship.entity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
-import ru.chatbot.warship.entity.Team;
 
 public class Player {
     Integer id;

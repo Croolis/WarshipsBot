@@ -30,18 +30,18 @@ public class PlayerService {
 
     private static final Long DEFAULT_LOCATION_BRITAIN = 1L;
     private static final Long DEFAULT_LOCATION_SPAIN = 2L;
-    private static final Long DEFAULT_SHIP_ID = 1L;
+    private static final Long DEFAULT_SHIP_ID = 0L;
 
     public Player getPlayer(Integer id) {
         try {
-            return this.jdbcTemplate.queryForObject(GET_PLAYER_BY_ID_SQL, new Object[]{id}, new Player.PlayerRowMapper());
+            return jdbcTemplate.queryForObject(GET_PLAYER_BY_ID_SQL, new Object[]{id}, new Player.PlayerRowMapper());
         } catch (DataAccessException e) {
             return null;
         }
     }
 
     public void createPlayer(Integer userId, String nickname, Team team) throws DataAccessException {
-        this.jdbcTemplate.update(INSERT_PLAYER_SQL, new Object[]{userId, nickname, team.getTeamId()});
+        jdbcTemplate.update(INSERT_PLAYER_SQL, new Object[]{userId, nickname, team.getTeamId()});
         shipService.createShip("My first ship", userId, DEFAULT_SHIP_ID, getPlayerLocation(userId));
     }
 
