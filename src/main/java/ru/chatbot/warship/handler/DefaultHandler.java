@@ -8,6 +8,10 @@ import ru.chatbot.warship.resources.Message;
  * Created by givorenon on 02.02.17.
  */
 public class DefaultHandler implements Handler {
+    @Override
+    public boolean matchCommand(Update update) {
+        return true;
+    }
 
     @Override
     public SendMessage handle(Update update) {

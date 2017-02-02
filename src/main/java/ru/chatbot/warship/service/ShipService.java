@@ -55,7 +55,7 @@ public class ShipService {
         }
     }
 
-    public void createShip(String shipName, Integer ownerId, Long typeId, Long locationId) {
+    public void createShip(String shipName, Integer ownerId, Long typeId, Integer locationId) {
         ShipType shipType = jdbcTemplate.queryForObject(GET_SHIP_TYPE_SQL, new Object[]{typeId}, new ShipType.ShipTypeRowMapper());
         Long speed =  shipType.getMeanSpeed() + (long)((Math.random() - 0.5) * 2 * shipType.getSpeedDeviation());
         Long power = shipType.getMeanPower() + (long)((Math.random() - 0.5) * 2 * shipType.getPowerDeviation());

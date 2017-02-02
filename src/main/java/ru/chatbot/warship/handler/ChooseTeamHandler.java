@@ -25,17 +25,15 @@ public class ChooseTeamHandler implements Handler {
     }
 
     private List<Team> teams = Arrays.asList(Team.values());
-
-    private boolean matchCommand(Update update) {
+    @Override
+    public boolean matchCommand(Update update) {
         return playerService.getPlayer(update.getMessage().getFrom().getId()) == null;
     }
 
+    @Override
     public SendMessage handle(Update update) {
-        if(!this.matchCommand(update)) {
-            return null;
-        } else {
-            Integer userID = update.getMessage().getFrom().getId();
-            String nickname = update.getMessage().getFrom().getUserName();
+        Integer userID = update.getMessage().getFrom().getId();
+        String nickname = update.getMessage().getFrom().getUserName();
 
             try {
                 Team team = Team.valueOf(update.getMessage().getText());

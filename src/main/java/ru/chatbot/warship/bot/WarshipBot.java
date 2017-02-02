@@ -26,9 +26,8 @@ public class WarshipBot extends TelegramLongPollingBot {
         if(update.hasMessage() && update.getMessage().hasText()) {
             try {
                 for (Handler handler : handlers) {
-                    SendMessage msg = handler.handle(update);
-                    if(msg != null) {
-                        this.sendMessage(msg);
+                    if (handler.matchCommand(update)) {
+                        this.sendMessage(handler.handle(update));
                         break;
                     }
                 }
