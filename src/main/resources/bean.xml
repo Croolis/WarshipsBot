@@ -34,22 +34,31 @@
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
+    <bean id="chooseTeamHandler" class="ru.chatbot.warship.handler.ChooseTeamHandler">
+        <property name="playerService" ref="playerService"/>
+    </bean>
+
     <bean id="playerInfoHandler" class="ru.chatbot.warship.handler.PlayerInfoHandler">
         <property name="playerService" ref="playerService"/>
         <property name="shipService" ref="shipService"/>
     </bean>
 
-    <bean id="chooseTeamHandler" class="ru.chatbot.warship.handler.ChooseTeamHandler">
-        <property name="playerService" ref="playerService"/>
-    </bean>
+    <bean id="defaultHandler" class="ru.chatbot.warship.handler.DefaultHandler"/>
 
     <bean id="warshipBot" class="ru.chatbot.warship.bot.WarshipBot" />
 
     <bean id="handlers" class="java.util.ArrayList">
         <constructor-arg>
+            <!--Order of elements in this list is important!-->
+            <!--DON'T reorder it!!!-->
             <list>
-                <ref bean="playerInfoHandler" />
-                <ref bean="chooseTeamHandler" />
+                <!--This handler must be first one!-->
+                <!--Don't place anything above it!-->
+                <ref bean="chooseTeamHandler"/>
+                <ref bean="playerInfoHandler"/>
+                <ref bean="defaultHandler"/>
+                <!--This handler must be the last one!-->
+                <!--Don't place anything below it!-->
             </list>
         </constructor-arg>
     </bean>
