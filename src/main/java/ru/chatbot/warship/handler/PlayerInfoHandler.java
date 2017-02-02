@@ -5,8 +5,11 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Ship;
+import ru.chatbot.warship.resources.Message;
 import ru.chatbot.warship.service.PlayerService;
 import ru.chatbot.warship.service.ShipService;
+
+import java.util.Arrays;
 
 
 /**
@@ -47,7 +50,7 @@ public class PlayerInfoHandler implements Handler {
                     "    Tonnage: " + ship.getTonnage().toString() + "\n" +
                     "    Type: " + ship.getTypeName();
             try {
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(msg);
+                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(msg).setReplyMarkup(Message.getKeyboard(Arrays.asList("INFO")));
             } catch (IllegalArgumentException e) {
                 return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("Sorry but there is nothing we can do");
             }
