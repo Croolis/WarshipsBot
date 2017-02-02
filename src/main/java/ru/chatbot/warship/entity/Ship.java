@@ -17,10 +17,10 @@ public class Ship {
     private Long power;
     private Long tonnage;
     private Boolean employed;
-    private Long locationId;
+    private Integer locationId;
 
     public Ship(Long id, Integer ownerId, String name, String typeName, Long speed, Long power,
-                Long tonnage, Boolean employed, Long locationId) {
+                Long tonnage, Boolean employed, Integer locationId) {
         this.id = id;
         this.ownerId = ownerId;
         this.name = name;
@@ -96,11 +96,11 @@ public class Ship {
         this.employed = employed;
     }
 
-    public Long getLocationId() {
+    public Integer getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(Long locationId) {
+    public void setLocationId(Integer locationId) {
         this.locationId = locationId;
     }
 
@@ -112,7 +112,7 @@ public class Ship {
             try {
                 return new Ship(rs.getLong("ID"), rs.getInt("OWNER_ID"), rs.getString("NAME"),
                         rs.getString("TYPE_NAME"), rs.getLong("SPEED"), rs.getLong("POWER"),
-                        rs.getLong("TONNAGE"), rs.getBoolean("EMPLOYED"), rs.getLong("LOCATION"));
+                        rs.getLong("TONNAGE"), rs.getBoolean("EMPLOYED"), rs.getInt("LOCATION"));
             } catch (SQLException e) {
                 return null;
             }

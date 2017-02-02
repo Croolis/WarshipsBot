@@ -34,6 +34,10 @@
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
+    <bean id="portService" class="ru.chatbot.warship.service.PortService">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
     <bean id="chooseTeamHandler" class="ru.chatbot.warship.handler.ChooseTeamHandler">
         <property name="playerService" ref="playerService"/>
     </bean>
@@ -41,6 +45,15 @@
     <bean id="playerInfoHandler" class="ru.chatbot.warship.handler.PlayerInfoHandler">
         <property name="playerService" ref="playerService"/>
         <property name="shipService" ref="shipService"/>
+        <property name="portService" ref="portService"/>
+    </bean>
+
+    <bean id="attackPreparationHandler" class="ru.chatbot.warship.handler.AttackPreparationHandler">
+        <property name="playerService" ref="playerService"/>
+        <property name="portService" ref="portService"/>
+    </bean>
+
+    <bean id="attackHandler" class="ru.chatbot.warship.handler.AttackHandler">
     </bean>
 
     <bean id="defaultHandler" class="ru.chatbot.warship.handler.DefaultHandler"/>
@@ -56,6 +69,8 @@
                 <!--Don't place anything above it!-->
                 <ref bean="chooseTeamHandler"/>
                 <ref bean="playerInfoHandler"/>
+                <ref bean="attackPreparationHandler"/>
+                <ref bean="attackHandler"/>
                 <ref bean="defaultHandler"/>
                 <!--This handler must be the last one!-->
                 <!--Don't place anything below it!-->

@@ -28,8 +28,6 @@ public class PlayerService {
     private static final String GET_PLAYER_BY_ID_SQL = "select ID, NICKNAME, TEAM, GOLD from PLAYER where ID = ?";
     private static final String INSERT_PLAYER_SQL = "insert into PLAYER (ID, NICKNAME, TEAM, GOLD) values(?, ?, ?, 0)";
 
-    private static final Long DEFAULT_LOCATION_BRITAIN = 1L;
-    private static final Long DEFAULT_LOCATION_SPAIN = 2L;
     private static final Long DEFAULT_SHIP_ID = 0L;
 
     public Player getPlayer(Integer id) {
@@ -45,7 +43,7 @@ public class PlayerService {
         shipService.createShip("My first ship", userId, DEFAULT_SHIP_ID, getPlayerLocation(userId));
     }
 
-    public Long getPlayerLocation(Integer id) {
+    public Integer getPlayerLocation(Integer id) {
         Player player = getPlayer(id);
         if (player != null) {
             Ship ship = shipService.getEmployedShip(id);
@@ -54,9 +52,9 @@ public class PlayerService {
             } else {
                 switch (player.getTeam()) {
                     case BRITAIN:
-                        return DEFAULT_LOCATION_BRITAIN;
+                        return PortService.getDefaultLocationBritain();
                     case SPAIN:
-                        return DEFAULT_LOCATION_SPAIN;
+                        return PortService.getDefaultLocationSpain();
                     default:
                         return null;
                 }

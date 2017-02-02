@@ -5,27 +5,15 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Port;
-import ru.chatbot.warship.entity.Ship;
-import ru.chatbot.warship.resources.Keyboard;
-import ru.chatbot.warship.resources.Message;
 import ru.chatbot.warship.service.PlayerService;
 import ru.chatbot.warship.service.PortService;
-import ru.chatbot.warship.service.ShipService;
 
-import java.util.Arrays;
-
+import java.util.List;
 
 /**
- * Created by givorenon on 31.01.17.
+ * Created by givorenon on 03.02.17.
  */
-public class PlayerInfoHandler implements Handler {
-    @Autowired
-    private ShipService shipService;
-
-    public void setShipService(ShipService shipService) {
-        this.shipService = shipService;
-    }
-
+public class AttackPreparationHandler implements Handler {
     @Autowired
     private PlayerService playerService;
 
@@ -39,23 +27,24 @@ public class PlayerInfoHandler implements Handler {
     public void setPortService(PortService portService) {
         this.portService = portService;
     }
-
     @Override
     public boolean matchCommand(Update update) {
-        return update.getMessage().getText().equals("INFO");
+        return update.getMessage().getText().equals("ATTACK");
     }
 
     @Override
     public SendMessage handle(Update update) {
-        Integer userID = update.getMessage().getFrom().getId();
-        Player player = playerService.getPlayer(userID);
-        Ship ship = shipService.getEmployedShip(userID);
-        try {
-            return Message.makeReplyMessage(update, Message.getInfoMessage(player, ship),
-                    Keyboard.getKeyboard(Arrays.asList("INFO")));
-        } catch (IllegalArgumentException e) {
-            return Message.makeReplyMessage(update, Message.getSorryMessage());
+        Integer userId = update.getMessage().getFrom().getId();
+        Player player = playerService.getPlayer(userId);
+        List<Port> ports = portService.getEnemyPorts(playerService.getPlayerLocation(player.getId()), player.getTeam());
+        String msg = "Choose port to attack:" + "\n";
+        for (Port port : ports) {
+            msg += "To attack port " + port.getName() + " write /attack_" + port.getId() + "\n";
         }
-
+        try {
+            return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(msg);
+        } catch (IllegalArgumentException e) {
+            return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("Sorry but there is nothing we can do");
+        }
     }
 }
