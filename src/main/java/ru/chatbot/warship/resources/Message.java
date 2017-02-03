@@ -4,6 +4,7 @@ import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Ship;
+import ru.chatbot.warship.entity.Team;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +36,16 @@ public class Message {
         return keyboardMarkup;
     }
 
-    public static String SORRY_MESSAGE = "Unavailable command";
+    public static final String SORRY_MESSAGE = "We so sorry, but we can't do anything with that. Really apologize. Please, forgive us.";
 
-    public static String CREDITS = "This game is written by @givorenon @ilyailya @LevOspennikov";
+    public static final String CREDITS = "This game is written by @givorenon @ilyailya @LevOspennikov";
 
-    public static String getJoinTeamMessage(String team) {
-        return "You successfully joined team " + team;
+    public static String getJoinTeamMessage(Team team) {
+        return "You successfully joined team " + team.toString();
     }
 
-    public static String getSelectTeamMessage(String team) {
-        return "To select team write one of " + team;
+    public static String getSelectTeamMessage(List<Team> teams) {
+        return "To select team write one of " + teams.toString();
     }
 
     public static String getInfoMessage(Player player, Ship ship) {

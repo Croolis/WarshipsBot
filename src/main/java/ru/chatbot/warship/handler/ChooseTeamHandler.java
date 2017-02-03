@@ -39,9 +39,9 @@ public class ChooseTeamHandler implements Handler {
             try {
                 Team team = Team.valueOf(update.getMessage().getText());
                 playerService.createPlayer(userID, nickname, team);
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.getJoinTeamMessage(team.toString())).setReplyMarkup(Message.getKeyboard(Arrays.asList("INFO")));
+                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.getJoinTeamMessage(team)).setReplyMarkup(Message.getKeyboard(Arrays.asList("INFO")));
             } catch (IllegalArgumentException e) {
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.getSelectTeamMessage(this.teams.toString()))
+                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.getSelectTeamMessage(teams))
                         .setReplyMarkup(Message.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
             }
         }
