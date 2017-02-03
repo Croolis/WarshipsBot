@@ -1,23 +1,21 @@
 package ru.chatbot.warship.resources;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Ship;
 import ru.chatbot.warship.entity.Team;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ospen on 2/3/2017.
  */
 public class Message {
-    public static final String SORRY_MESSAGE = "We so sorry, but we can't do anything with that. Really apologize. Please, forgive us.";
+    private static final String SORRY_MESSAGE = "We so sorry, but we can't do anything with that. Really apologize. Please, forgive us.";
 
-    public static final String CREDITS = "This game is written by @givorenon @ilyailya @LevOspennikov";
+    private static final String CREDITS = "This game is written by @givorenon @ilyailya @LevOspennikov";
 
     public static String getSorryMessage() {
         return SORRY_MESSAGE;
@@ -43,6 +41,14 @@ public class Message {
                 "    Speed:   " + ship.getSpeed().toString() + "\n" +
                 "    Tonnage: " + ship.getTonnage().toString() + "\n" +
                 "    Type: " + ship.getTypeName();
+    }
+
+    public static SendMessage makeReplyMessage(Update update, String message) {
+        return new SendMessage().setChatId(update.getMessage().getChatId()).setText(message);
+    }
+
+    public static SendMessage makeReplyMessage(Update update, String message, ReplyKeyboard keyboard) {
+        return makeReplyMessage(update, message).setReplyMarkup(keyboard);
     }
 
     public static SendMessage makeMessage(Long chatId, String message) {

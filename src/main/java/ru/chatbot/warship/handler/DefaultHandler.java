@@ -12,9 +12,9 @@ public class DefaultHandler implements Handler {
     @Override
     public SendMessage handle(Update update) {
         try {
-            return Message.makeMessage(update.getMessage().getChatId(), Message.getCreditsMessage());
+            return Message.makeReplyMessage(update, Message.getCreditsMessage());
         } catch (IllegalArgumentException e) {
-            return Message.makeMessage(update.getMessage().getChatId(), Message.getSorryMessage());
+            return Message.makeReplyMessage(update, Message.getSorryMessage());
         }
     }
 }

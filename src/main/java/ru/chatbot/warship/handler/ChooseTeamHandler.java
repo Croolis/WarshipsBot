@@ -40,10 +40,10 @@ public class ChooseTeamHandler implements Handler {
             try {
                 Team team = Team.valueOf(update.getMessage().getText());
                 playerService.createPlayer(userID, nickname, team);
-                return Message.makeMessage(update.getMessage().getChatId(), Message.getJoinTeamMessage(team),
+                return Message.makeReplyMessage(update, Message.getJoinTeamMessage(team),
                         Keyboard.getKeyboard(Arrays.asList("INFO")));
             } catch (IllegalArgumentException e) {
-                return Message.makeMessage(update.getMessage().getChatId(), Message.getSelectTeamMessage(teams),
+                return Message.makeReplyMessage(update, Message.getSelectTeamMessage(teams),
                         Keyboard.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
             }
         }
