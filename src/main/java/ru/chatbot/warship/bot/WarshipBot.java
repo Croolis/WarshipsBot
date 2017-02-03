@@ -9,6 +9,7 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import ru.chatbot.warship.handler.Handler;
+import ru.chatbot.warship.resources.Keyboard;
 
 /**
  * Created by givorenon on 30.01.17.
@@ -28,6 +29,7 @@ public class WarshipBot extends TelegramLongPollingBot {
                 for (Handler handler : handlers) {
                     SendMessage msg = handler.handle(update);
                     if(msg != null) {
+                        msg.setReplyMarkup(Keyboard.getKeyboard(handler.getPossibilities(update)));
                         this.sendMessage(msg);
                         break;
                     }
