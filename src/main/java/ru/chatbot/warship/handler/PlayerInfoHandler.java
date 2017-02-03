@@ -42,17 +42,11 @@ public class PlayerInfoHandler implements Handler {
             Integer userID = update.getMessage().getFrom().getId();
             Player player = playerService.getPlayer(userID);
             Ship ship = shipService.getEmployedShip(userID);
-            String msg = "Your nickname: " + player.getNickname() + "\n" +
-                    "Your team: " + player.getTeam().toString() + "\n" +
-                    "Your ship:" + "\n" +
-                    "    Power:   " + ship.getPower().toString() + "\n" +
-                    "    Speed:   " + ship.getSpeed().toString() + "\n" +
-                    "    Tonnage: " + ship.getTonnage().toString() + "\n" +
-                    "    Type: " + ship.getTypeName();
+            String msg = Message.getInfoMessage(player, ship);
             try {
                 return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(msg).setReplyMarkup(Message.getKeyboard(Arrays.asList("INFO")));
             } catch (IllegalArgumentException e) {
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("Sorry but there is nothing we can do");
+                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.SORRY_MESSAGE);
             }
         }
     }

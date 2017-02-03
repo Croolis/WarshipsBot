@@ -2,6 +2,8 @@ package ru.chatbot.warship.resources;
 
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
+import ru.chatbot.warship.entity.Player;
+import ru.chatbot.warship.entity.Ship;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,28 @@ public class Message {
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.setOneTimeKeyboad(true);
         return keyboardMarkup;
+    }
+
+    public static String SORRY_MESSAGE = "Unavailable command";
+
+    public static String CREDITS = "This game is written by @givorenon @ilyailya @LevOspennikov";
+
+    public static String getJoinTeamMessage(String team) {
+        return "You successfully joined team " + team;
+    }
+
+    public static String getSelectTeamMessage(String team) {
+        return "To select team write one of " + team;
+    }
+
+    public static String getInfoMessage(Player player, Ship ship) {
+        return "Your nickname: " + player.getNickname() + "\n" +
+                "Your team: " + player.getTeam().toString() + "\n" +
+                "Your ship:" + "\n" +
+                "    Power:   " + ship.getPower().toString() + "\n" +
+                "    Speed:   " + ship.getSpeed().toString() + "\n" +
+                "    Tonnage: " + ship.getTonnage().toString() + "\n" +
+                "    Type: " + ship.getTypeName();
     }
 
 }

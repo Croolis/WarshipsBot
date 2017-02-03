@@ -2,6 +2,7 @@ package ru.chatbot.warship.handler;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import ru.chatbot.warship.resources.Message;
 
 /**
  * Created by givorenon on 02.02.17.
@@ -10,11 +11,11 @@ public class DefaultHandler implements Handler {
 
     @Override
     public SendMessage handle(Update update) {
-        String msg = "This game is written by @givorenon @ilyailya @LevOspennikov";
+
         try {
-            return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(msg);
+            return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.CREDITS);
         } catch (IllegalArgumentException e) {
-            return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("Sorry but there is nothing we can do");
+            return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.SORRY_MESSAGE);
         }
 
     }
