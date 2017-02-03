@@ -2,11 +2,14 @@ package ru.chatbot.warship.handler;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import ru.chatbot.warship.entity.Team;
+import ru.chatbot.warship.resources.Keyboard;
+import ru.chatbot.warship.resources.Message;
 import ru.chatbot.warship.service.PlayerService;
 
 /**
@@ -37,9 +40,11 @@ public class ChooseTeamHandler implements Handler {
             try {
                 Team team = Team.valueOf(update.getMessage().getText());
                 playerService.createPlayer(userID, nickname, team);
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("You successfuly joined team " + team.toString());
+                return Message.makeMessage(update.getMessage().getChatId(), Message.getJoinTeamMessage(team),
+                        Keyboard.getKeyboard(Arrays.asList("INFO")));
             } catch (IllegalArgumentException e) {
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("To select team write one of " + this.teams.toString());
+                return Message.makeMessage(update.getMessage().getChatId(), Message.getSelectTeamMessage(teams),
+                        Keyboard.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
             }
         }
     }
