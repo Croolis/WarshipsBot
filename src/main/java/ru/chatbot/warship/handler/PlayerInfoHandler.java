@@ -5,6 +5,7 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Ship;
+import ru.chatbot.warship.resources.Keyboard;
 import ru.chatbot.warship.resources.Message;
 import ru.chatbot.warship.service.PlayerService;
 import ru.chatbot.warship.service.ShipService;
@@ -42,11 +43,11 @@ public class PlayerInfoHandler implements Handler {
             Integer userID = update.getMessage().getFrom().getId();
             Player player = playerService.getPlayer(userID);
             Ship ship = shipService.getEmployedShip(userID);
-            String msg = Message.getInfoMessage(player, ship);
             try {
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(msg).setReplyMarkup(Message.getKeyboard(Arrays.asList("INFO")));
+                return Message.makeMessage(update.getMessage().getChatId(), Message.getInfoMessage(player, ship),
+                        Keyboard.getKeyboard(Arrays.asList("INFO")));
             } catch (IllegalArgumentException e) {
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.SORRY_MESSAGE);
+                return Message.makeMessage(update.getMessage().getChatId(), Message.getSorryMessage());
             }
         }
     }

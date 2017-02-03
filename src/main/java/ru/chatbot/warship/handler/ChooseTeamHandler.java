@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import ru.chatbot.warship.entity.Team;
+import ru.chatbot.warship.resources.Keyboard;
 import ru.chatbot.warship.resources.Message;
 import ru.chatbot.warship.service.PlayerService;
 
@@ -39,10 +40,11 @@ public class ChooseTeamHandler implements Handler {
             try {
                 Team team = Team.valueOf(update.getMessage().getText());
                 playerService.createPlayer(userID, nickname, team);
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.getJoinTeamMessage(team)).setReplyMarkup(Message.getKeyboard(Arrays.asList("INFO")));
+                return Message.makeMessage(update.getMessage().getChatId(), Message.getJoinTeamMessage(team),
+                        Keyboard.getKeyboard(Arrays.asList("INFO")));
             } catch (IllegalArgumentException e) {
-                return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText(Message.getSelectTeamMessage(teams))
-                        .setReplyMarkup(Message.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
+                return Message.makeMessage(update.getMessage().getChatId(), Message.getSelectTeamMessage(teams),
+                        Keyboard.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
             }
         }
     }
