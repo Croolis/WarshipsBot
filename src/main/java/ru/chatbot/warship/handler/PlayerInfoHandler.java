@@ -11,6 +11,7 @@ import ru.chatbot.warship.service.PlayerService;
 import ru.chatbot.warship.service.ShipService;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -26,6 +27,11 @@ public class PlayerInfoHandler implements Handler {
 
     @Autowired
     private PlayerService playerService;
+
+    @Override
+    public List<String> getPossibilities(Update update) {
+        return Arrays.asList("INFO");
+    }
 
     public void setPlayerService(PlayerService playerService) {
         this.playerService = playerService;
@@ -44,8 +50,7 @@ public class PlayerInfoHandler implements Handler {
             Player player = playerService.getPlayer(userID);
             Ship ship = shipService.getEmployedShip(userID);
             try {
-                return Message.makeReplyMessage(update, Message.getInfoMessage(player, ship),
-                        Keyboard.getKeyboard(Arrays.asList("INFO")));
+                return Message.makeReplyMessage(update, Message.getInfoMessage(player, ship));
             } catch (IllegalArgumentException e) {
                 return Message.makeReplyMessage(update, Message.getSorryMessage());
             }

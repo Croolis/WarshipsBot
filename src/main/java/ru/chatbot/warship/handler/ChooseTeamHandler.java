@@ -1,5 +1,6 @@
 package ru.chatbot.warship.handler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Team;
 import ru.chatbot.warship.resources.Keyboard;
 import ru.chatbot.warship.resources.Message;
@@ -17,6 +19,7 @@ import ru.chatbot.warship.service.PlayerService;
  */
 
 public class ChooseTeamHandler implements Handler {
+
     @Autowired
     private PlayerService playerService;
 
@@ -30,6 +33,17 @@ public class ChooseTeamHandler implements Handler {
         return playerService.getPlayer(update.getMessage().getFrom().getId()) == null;
     }
 
+    @Override
+    public List<String> getPossibilities(Update update) {
+        Player player = playerService.getPlayer(update.getMessage().getFrom().getId());
+        if (player == null) {
+            return teams.stream().map(Enum::toString).collect(Collectors.toList());
+        } else {
+            return Arrays.asList("INFO");
+        }
+
+    }
+
     public SendMessage handle(Update update) {
         if(!this.matchCommand(update)) {
             return null;
@@ -40,11 +54,9 @@ public class ChooseTeamHandler implements Handler {
             try {
                 Team team = Team.valueOf(update.getMessage().getText());
                 playerService.createPlayer(userID, nickname, team);
-                return Message.makeReplyMessage(update, Message.getJoinTeamMessage(team),
-                        Keyboard.getKeyboard(Arrays.asList("INFO")));
+                return Message.makeReplyMessage(update, Message.getJoinTeamMessage(team));
             } catch (IllegalArgumentException e) {
-                return Message.makeReplyMessage(update, Message.getSelectTeamMessage(teams),
-                        Keyboard.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
+                return Message.makeReplyMessage(update, Message.getSelectTeamMessage(teams));
             }
         }
     }
