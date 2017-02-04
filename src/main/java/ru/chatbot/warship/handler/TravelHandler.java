@@ -8,13 +8,16 @@ import ru.chatbot.warship.entity.Port;
 import ru.chatbot.warship.resources.Message;
 import ru.chatbot.warship.service.PlayerService;
 import ru.chatbot.warship.service.PortService;
+import ru.chatbot.warship.service.ShipService;
 
-import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by givorenon on 03.02.17.
  */
-public class AttackPreparationHandler implements Handler {
+public class TravelHandler implements Handler {
+    private Pattern travelPattern = Pattern.compile("\\/travel_(\\d)+");
+
     @Autowired
     private PlayerService playerService;
 
@@ -23,24 +26,37 @@ public class AttackPreparationHandler implements Handler {
     }
 
     @Autowired
+    private ShipService shipService;
+
+    public void setShipService(ShipService shipService) {
+        this.shipService = shipService;
+    }
+
+    @Autowired
     private PortService portService;
 
     public void setPortService(PortService portService) {
         this.portService = portService;
     }
+
     @Override
     public boolean matchCommand(Update update) {
-        return update.getMessage().getText().equals("ATTACK");
+        return travelPattern.matcher(update.getMessage().getText()).matches();
     }
 
     @Override
     public SendMessage handle(Update update) {
+
         Integer userId = update.getMessage().getFrom().getId();
         Player player = playerService.getPlayer(userId);
-        List<Port> ports = portService.getEnemyPorts(playerService.getPlayerLocation(player.getId()), player.getTeam());
-
+        Integer destinationId = Integer.valueOf(update.getMessage().getText().substring(8));
+        Port port = portService.getPort(destinationId);
         try {
-            return Message.makeReplyMessage(update, Message.getAttackPreparationMessage(ports));
+            if (playerService.arrive(player, port)) {
+                return Message.makeReplyMessage(update, Message.getArrivalMessage(port));
+            } else {
+                return Message.makeReplyMessage(update, Message.getPortTakenBeforeArrivalMessage(port));
+            }
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());
         }

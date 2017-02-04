@@ -4,9 +4,11 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboard;
 import ru.chatbot.warship.entity.Player;
+import ru.chatbot.warship.entity.Port;
 import ru.chatbot.warship.entity.Ship;
 import ru.chatbot.warship.entity.Team;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,14 +35,60 @@ public class Message {
         return "To select team write one of " + teams.toString();
     }
 
-    public static String getInfoMessage(Player player, Ship ship) {
+    public static String getInfoMessage(Player player, Ship ship, Port port) {
         return "Your nickname: " + player.getNickname() + "\n" +
                 "Your team: " + player.getTeam().toString() + "\n" +
+                "Your gold: " + player.getGold() + "\n" +
                 "Your ship:" + "\n" +
                 "    Power:   " + ship.getPower().toString() + "\n" +
                 "    Speed:   " + ship.getSpeed().toString() + "\n" +
                 "    Tonnage: " + ship.getTonnage().toString() + "\n" +
-                "    Type: " + ship.getTypeName();
+                "    Type: " + ship.getTypeName() + "\n" +
+                "You are in " + port.getName();
+    }
+
+    public static String getAttackMessage() {
+        return "YOU ATTACK";
+    }
+
+    public static String getAttackPreparationMessage(Collection<Port> ports) {
+        String msg = "Choose port to attack:" + "\n";
+        for (Port port : ports) {
+            msg += "To attack port " + port.getName() + " write /attack_" + port.getId() + "\n" +
+                    "There are " + port.getDistance() + " miles to travel before attack" + "\n";
+        }
+        return msg;
+    }
+
+    public static String getPortTakenBeforeArrivalMessage(Port port) {
+        return "Port" + port.getName() + "was captured by enemy to you decided to turn your ship around";
+    }
+
+    public static String getArrivalTradeMessage(Port port, Long gold) {
+        return "You arrived to " + port.getName() + "\n" +
+                "You earn " + gold + " gold";
+    }
+
+    public static String getTradePreparationMessage(Collection<Port> ports) {
+        String msg = "Choose port to trade with:" + "\n";
+        for (Port port : ports) {
+            msg += "To trade with port " + port.getName() + " write /trade_" + port.getId() + "\n" +
+                    "There are " + port.getDistance() + " miles to travel, but you will get " + port.getReward() + "\n";
+        }
+        return msg;
+    }
+
+    public static String getArrivalMessage(Port port) {
+        return "You arrived to " + port.getName();
+    }
+
+    public static String getTravelPreparrationMessage(Collection<Port> ports) {
+        String msg = "Choose port to attack:" + "\n";
+        for (Port port : ports) {
+            msg += "To travel to port " + port.getName() + " write /travel_" + port.getId() + "\n" +
+                    "There are " + port.getDistance() + " miles to travel, and you will get no reward" + "\n";
+        }
+        return msg;
     }
 
     public static SendMessage makeReplyMessage(Update update, String message) {

@@ -3,6 +3,7 @@ package ru.chatbot.warship.handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import ru.chatbot.warship.resources.Message;
 
 import java.util.regex.Pattern;
 
@@ -21,9 +22,9 @@ public class AttackHandler implements Handler {
     public SendMessage handle(Update update) {
 
         try {
-            return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("YOU ATTACK");
+            return Message.makeReplyMessage(update, Message.getAttackMessage());
         } catch (IllegalArgumentException e) {
-            return (new SendMessage()).setChatId(update.getMessage().getChatId()).setText("Sorry but there is nothing we can do");
+            return Message.makeReplyMessage(update, Message.getSorryMessage());
         }
     }
 }
