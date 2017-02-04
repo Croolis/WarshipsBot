@@ -35,15 +35,14 @@ public class ChooseTeamHandler implements Handler {
         Integer userID = update.getMessage().getFrom().getId();
         String nickname = update.getMessage().getFrom().getUserName();
 
-            try {
-                Team team = Team.valueOf(update.getMessage().getText());
-                playerService.createPlayer(userID, nickname, team);
-                return Message.makeReplyMessage(update, Message.getJoinTeamMessage(team),
-                        Keyboard.getKeyboard(Arrays.asList("INFO")));
-            } catch (IllegalArgumentException e) {
-                return Message.makeReplyMessage(update, Message.getSelectTeamMessage(teams),
-                        Keyboard.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
-            }
+        try {
+            Team team = Team.valueOf(update.getMessage().getText());
+            playerService.createPlayer(userID, nickname, team);
+            return Message.makeReplyMessage(update, Message.getJoinTeamMessage(team),
+                    Keyboard.getKeyboard(Arrays.asList("INFO")));
+        } catch (IllegalArgumentException e) {
+            return Message.makeReplyMessage(update, Message.getSelectTeamMessage(teams),
+                    Keyboard.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
         }
     }
 }

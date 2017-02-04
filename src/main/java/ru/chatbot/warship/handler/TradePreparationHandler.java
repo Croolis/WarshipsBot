@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by givorenon on 03.02.17.
  */
-public class AttackPreparationHandler implements Handler {
+public class TradePreparationHandler implements Handler {
     @Autowired
     private PlayerService playerService;
 
@@ -28,19 +28,19 @@ public class AttackPreparationHandler implements Handler {
     public void setPortService(PortService portService) {
         this.portService = portService;
     }
+
     @Override
     public boolean matchCommand(Update update) {
-        return update.getMessage().getText().equals("ATTACK");
+        return update.getMessage().getText().equals("TRADE");
     }
 
     @Override
     public SendMessage handle(Update update) {
         Integer userId = update.getMessage().getFrom().getId();
         Player player = playerService.getPlayer(userId);
-        List<Port> ports = portService.getEnemyPorts(playerService.getPlayerLocation(player.getId()), player.getTeam());
-
+        List<Port> ports = portService.getAllyPorts(playerService.getPlayerLocation(player.getId()), player.getTeam());
         try {
-            return Message.makeReplyMessage(update, Message.getAttackPreparationMessage(ports));
+            return Message.makeReplyMessage(update, Message.getTradePreparationMessage(ports));
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());
         }

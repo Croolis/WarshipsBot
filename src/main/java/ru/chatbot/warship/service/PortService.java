@@ -22,7 +22,28 @@ public class PortService {
     }
 
     private static final String GET_PORT_SQL = "SELECT ID, NAME, X, Y, OWNER FROM PORT WHERE ID = ?";
-    private static final String GET_ENEMNY_PORTS_SQL = "SELECT ID, NAME, X, Y, OWNER FROM PORT WHERE OWNER != ?";
+    private static final String GET_ENEMNY_PORTS_SQL = "SELECT p.ID, p.NAME, p.X, p.Y, p.OWNER, d.DISTANCE, d.REWARD " +
+            "FROM PORT p, ROUTE d " +
+            "WHERE " +
+            "(" +
+            "(d.FROM_PORT = ? " +
+            "AND d.TO_PORT = p.ID)" +
+            "OR " +
+            "(d.TO_PORT = ? " +
+            "AND d.FROM_PORT = p.ID)" +
+            ") " +
+            "AND p.OWNER != ?";
+    private static final String GET_ALLY_PORTS_SQL = "SELECT p.ID, p.NAME, p.X, p.Y, p.OWNER, d.DISTANCE, d.REWARD " +
+            "FROM PORT p, ROUTE d " +
+            "WHERE " +
+            "(" +
+            "(d.FROM_PORT = ? " +
+            "AND d.TO_PORT = p.ID)" +
+            "OR " +
+            "(d.TO_PORT = ? " +
+            "AND d.FROM_PORT = p.ID)" +
+            ") " +
+            "AND p.OWNER = ?";
 
     private static final Integer DEFAULT_LOCATION_BRITAIN = 1;
     private static final Integer DEFAULT_LOCATION_SPAIN = 2;
@@ -37,10 +58,24 @@ public class PortService {
 
     public List<Port> getEnemyPorts(Integer portId, Team team) {
         try {
-            return jdbcTemplate.queryForList(GET_ENEMNY_PORTS_SQL, team.getTeamId()).stream()
+            return jdbcTemplate.queryForList(GET_ENEMNY_PORTS_SQL, new Object[]{portId, portId, team.getTeamId()}).stream()
                     .map(rs -> {
                         return new Port((Integer)rs.get("ID"), (String)rs.get("NAME"), (Integer)rs.get("X"),
-                                (Integer)rs.get("Y"), Team.valueOf((Integer)rs.get("OWNER")));
+                                (Integer)rs.get("Y"), Team.valueOf((Integer)rs.get("OWNER")),
+                                (Integer)rs.get("DISTANCE"), (Integer)rs.get("REWARD"));
+                    }).collect(Collectors.toList());
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    public List<Port> getAllyPorts(Integer portId, Team team) {
+        try {
+            return jdbcTemplate.queryForList(GET_ALLY_PORTS_SQL, new Object[]{portId, portId, team.getTeamId()}).stream()
+                    .map(rs -> {
+                        return new Port((Integer)rs.get("ID"), (String)rs.get("NAME"), (Integer)rs.get("X"),
+                                (Integer)rs.get("Y"), Team.valueOf((Integer)rs.get("OWNER")),
+                                (Integer)rs.get("DISTANCE"), (Integer)rs.get("REWARD"));
                     }).collect(Collectors.toList());
         } catch (DataAccessException e) {
             return null;

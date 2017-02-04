@@ -3,6 +3,8 @@ package ru.chatbot.warship.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import ru.chatbot.warship.entity.Player;
+import ru.chatbot.warship.entity.Port;
 import ru.chatbot.warship.entity.Ship;
 import ru.chatbot.warship.entity.ShipType;
 
@@ -36,6 +38,9 @@ public class ShipService {
     private final static String GET_SHIP_TYPE_SQL = "select ID, NAME, MEAN_SPEED, SPEED_DEVIATION, " +
             "MEAN_POWER, POWER_DEVIATION, MEAN_TONNAGE, TONNAGE_DEVIATION from SHIP_TYPE where ID = ?";
 
+    private final static String UPDATE_LOCATION_SQL = "update SHIP set LOCATION = ? " +
+            "where OWNER_ID = ? and EMPLOYED = 1";
+
     public Ship getShip(Long id) {
         try {
             return jdbcTemplate.queryForObject(GET_SHIP_BY_ID_SQL, new Object[]{id}, new Ship.ShipRowMapper());
@@ -63,5 +68,9 @@ public class ShipService {
         jdbcTemplate.update(UNEMPLOY_SHIP_SQL, ownerId);
         jdbcTemplate.update(INSERT_SHIP_SQL, new Object[]{ownerId, shipName, typeId,
                 speed, power, tonnage, locationId});
+    }
+
+    public void changeLocation(Player player, Port port) {
+        jdbcTemplate.update(UPDATE_LOCATION_SQL, new Object[]{port.getId(), player.getId()});
     }
 }

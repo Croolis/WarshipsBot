@@ -50,8 +50,9 @@ public class PlayerInfoHandler implements Handler {
         Integer userID = update.getMessage().getFrom().getId();
         Player player = playerService.getPlayer(userID);
         Ship ship = shipService.getEmployedShip(userID);
+        Port port = portService.getPort(playerService.getPlayerLocation(player.getId()));
         try {
-            return Message.makeReplyMessage(update, Message.getInfoMessage(player, ship),
+            return Message.makeReplyMessage(update, Message.getInfoMessage(player, ship, port),
                     Keyboard.getKeyboard(Arrays.asList("INFO")));
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());

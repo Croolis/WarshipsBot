@@ -53,7 +53,28 @@
         <property name="portService" ref="portService"/>
     </bean>
 
-    <bean id="attackHandler" class="ru.chatbot.warship.handler.AttackHandler">
+    <bean id="tradePreparationHandler" class="ru.chatbot.warship.handler.TradePreparationHandler">
+        <property name="playerService" ref="playerService"/>
+        <property name="portService" ref="portService"/>
+    </bean>
+
+    <bean id="travelPreparationHandler" class="ru.chatbot.warship.handler.TravelPreparationHandler">
+        <property name="playerService" ref="playerService"/>
+        <property name="portService" ref="portService"/>
+    </bean>
+
+    <bean id="attackHandler" class="ru.chatbot.warship.handler.AttackHandler"/>
+
+    <bean id="tradeHandler" class="ru.chatbot.warship.handler.TradeHandler">
+        <property name="playerService" ref="playerService"/>
+        <property name="shipService" ref="shipService"/>
+        <property name="portService" ref="portService"/>
+    </bean>
+
+    <bean id="travelHandler" class="ru.chatbot.warship.handler.TravelHandler">
+        <property name="playerService" ref="playerService"/>
+        <property name="shipService" ref="shipService"/>
+        <property name="portService" ref="portService"/>
     </bean>
 
     <bean id="defaultHandler" class="ru.chatbot.warship.handler.DefaultHandler"/>
@@ -71,6 +92,10 @@
                 <ref bean="playerInfoHandler"/>
                 <ref bean="attackPreparationHandler"/>
                 <ref bean="attackHandler"/>
+                <ref bean="tradePreparationHandler"/>
+                <ref bean="tradeHandler"/>
+                <ref bean="travelPreparationHandler"/>
+                <ref bean="travelHandler"/>
                 <ref bean="defaultHandler"/>
                 <!--This handler must be the last one!-->
                 <!--Don't place anything below it!-->
