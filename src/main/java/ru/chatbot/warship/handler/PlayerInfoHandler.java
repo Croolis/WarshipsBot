@@ -53,7 +53,7 @@ public class PlayerInfoHandler implements Handler {
         Port port = portService.getPort(playerService.getPlayerLocation(player.getId()));
         try {
             return Message.makeReplyMessage(update, Message.getInfoMessage(player, ship, port),
-                    Keyboard.getKeyboard(Arrays.asList("INFO")));
+                    Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());
         }

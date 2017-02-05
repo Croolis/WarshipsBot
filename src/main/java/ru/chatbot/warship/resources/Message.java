@@ -47,8 +47,15 @@ public class Message {
                 "You are in " + port.getName();
     }
 
+    public static String getVoyageMessage() {
+        return "Choose what do you want to do" + "\n" +
+                "Attack is the only way to get enemy's port" + "\n" +
+                "Trade is the easiest way to earn some gold" + "\n" +
+                "Travel allows you to move between ports of your team without being in danger";
+    }
+
     public static String getAttackMessage() {
-        return "YOU ATTACK";
+        return "Attack is not implemented yet";
     }
 
     public static String getAttackPreparationMessage(Collection<Port> ports) {

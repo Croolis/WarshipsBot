@@ -40,7 +40,8 @@ public class AttackPreparationHandler implements Handler {
         List<Port> ports = portService.getEnemyPorts(playerService.getPlayerLocation(player.getId()), player.getTeam());
 
         try {
-            return Message.makeReplyMessage(update, Message.getAttackPreparationMessage(ports));
+            return Message.makeReplyMessage(update, Message.getAttackPreparationMessage(ports),
+                    null);
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());
         }

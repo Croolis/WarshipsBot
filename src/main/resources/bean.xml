@@ -48,6 +48,8 @@
         <property name="portService" ref="portService"/>
     </bean>
 
+    <bean id="voyageHandler" class="ru.chatbot.warship.handler.VoyageHandler"/>
+
     <bean id="attackPreparationHandler" class="ru.chatbot.warship.handler.AttackPreparationHandler">
         <property name="playerService" ref="playerService"/>
         <property name="portService" ref="portService"/>
@@ -90,6 +92,7 @@
                 <!--Don't place anything above it!-->
                 <ref bean="chooseTeamHandler"/>
                 <ref bean="playerInfoHandler"/>
+                <ref bean="voyageHandler"/>
                 <ref bean="attackPreparationHandler"/>
                 <ref bean="attackHandler"/>
                 <ref bean="tradePreparationHandler"/>

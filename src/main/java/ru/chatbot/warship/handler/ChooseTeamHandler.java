@@ -39,7 +39,7 @@ public class ChooseTeamHandler implements Handler {
             Team team = Team.valueOf(update.getMessage().getText());
             playerService.createPlayer(userID, nickname, team);
             return Message.makeReplyMessage(update, Message.getJoinTeamMessage(team),
-                    Keyboard.getKeyboard(Arrays.asList("INFO")));
+                    Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSelectTeamMessage(teams),
                     Keyboard.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));

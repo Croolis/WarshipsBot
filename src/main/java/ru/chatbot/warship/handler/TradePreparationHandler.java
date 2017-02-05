@@ -40,7 +40,8 @@ public class TradePreparationHandler implements Handler {
         Player player = playerService.getPlayer(userId);
         List<Port> ports = portService.getAllyPorts(playerService.getPlayerLocation(player.getId()), player.getTeam());
         try {
-            return Message.makeReplyMessage(update, Message.getTradePreparationMessage(ports));
+            return Message.makeReplyMessage(update, Message.getTradePreparationMessage(ports),
+                    null);
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());
         }

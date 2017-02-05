@@ -5,11 +5,13 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import ru.chatbot.warship.entity.Player;
 import ru.chatbot.warship.entity.Port;
+import ru.chatbot.warship.resources.Keyboard;
 import ru.chatbot.warship.resources.Message;
 import ru.chatbot.warship.service.PlayerService;
 import ru.chatbot.warship.service.PortService;
 import ru.chatbot.warship.service.ShipService;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -53,9 +55,11 @@ public class TravelHandler implements Handler {
         Port port = portService.getPort(destinationId);
         try {
             if (playerService.arrive(player, port)) {
-                return Message.makeReplyMessage(update, Message.getArrivalMessage(port));
+                return Message.makeReplyMessage(update, Message.getArrivalMessage(port),
+                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
             } else {
-                return Message.makeReplyMessage(update, Message.getPortTakenBeforeArrivalMessage(port));
+                return Message.makeReplyMessage(update, Message.getPortTakenBeforeArrivalMessage(port),
+                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
             }
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());

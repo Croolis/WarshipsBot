@@ -6,27 +6,24 @@ import ru.chatbot.warship.resources.Keyboard;
 import ru.chatbot.warship.resources.Message;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 /**
- * Created by givorenon on 03.02.17.
+ * Created by givorenon on 05.02.17.
  */
-public class AttackHandler implements Handler {
-    private Pattern attackPattern = Pattern.compile("\\/attack_(\\d)+");
-
+public class VoyageHandler implements Handler {
     @Override
     public boolean matchCommand(Update update) {
-        return attackPattern.matcher(update.getMessage().getText()).matches();
+        return update.getMessage().getText().equals("VOYAGE");
     }
 
     @Override
     public SendMessage handle(Update update) {
-
         try {
-            return Message.makeReplyMessage(update, Message.getAttackMessage(),
-                    Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+            return Message.makeReplyMessage(update, Message.getVoyageMessage(),
+                    Keyboard.getKeyboard(Arrays.asList("ATTACK", "TRADE", "TRAVEL")));
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());
         }
+
     }
 }
