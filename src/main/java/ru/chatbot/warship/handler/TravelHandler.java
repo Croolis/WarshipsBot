@@ -53,6 +53,18 @@ public class TravelHandler implements Handler {
         Player player = playerService.getPlayer(userId);
         Integer destinationId = Integer.valueOf(update.getMessage().getText().substring(8));
         Port port = portService.getPort(destinationId);
+        if (playerService.getPlayerLocation(player.getId()).equals(port.getId())) {
+            return Message.makeReplyMessage(update, Message.getAlreadyHereMessage(port),
+                    Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+        }
+        if (port == null) {
+            return Message.makeReplyMessage(update, Message.getNoSuchPortMessage(),
+                    Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+        }
+        if (!port.getOwner().equals(player.getTeam())) {
+            return Message.makeReplyMessage(update, Message.getTravelEnemyPort(),
+                    Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+        }
         try {
             if (playerService.arrive(player, port)) {
                 return Message.makeReplyMessage(update, Message.getArrivalMessage(port),

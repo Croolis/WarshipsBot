@@ -58,6 +58,22 @@ public class Message {
         return "Attack is not implemented yet";
     }
 
+    public static String getNoSuchPortMessage() {
+        return "No such port";
+    }
+
+    public static String getAttackOwnPort() {
+        return "You can't attack your own port";
+    }
+
+    public static String getTradeEnemyPort() {
+        return "You can't trade with enemy port";
+    }
+
+    public static String getTravelEnemyPort() {
+        return "You can't travel to enemy port";
+    }
+
     public static String getAttackPreparationMessage(Collection<Port> ports) {
         String msg = "Choose port to attack:" + "\n";
         for (Port port : ports) {
@@ -76,6 +92,10 @@ public class Message {
                 "You earn " + gold + " gold";
     }
 
+    public static String getAlreadyHereMessage(Port port) {
+        return "You are already in port " + port.getName();
+    }
+
     public static String getTradePreparationMessage(Collection<Port> ports) {
         String msg = "Choose port to trade with:" + "\n";
         for (Port port : ports) {
@@ -90,7 +110,7 @@ public class Message {
     }
 
     public static String getTravelPreparrationMessage(Collection<Port> ports) {
-        String msg = "Choose port to attack:" + "\n";
+        String msg = "Choose port to travel to:" + "\n";
         for (Port port : ports) {
             msg += "To travel to port " + port.getName() + " write /travel_" + port.getId() + "\n" +
                     "There are " + port.getDistance() + " miles to travel, and you will get no reward" + "\n";

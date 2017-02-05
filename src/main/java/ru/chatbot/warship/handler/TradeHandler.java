@@ -54,6 +54,18 @@ public class TradeHandler implements Handler {
             Player player = playerService.getPlayer(userId);
             Integer destinationId = Integer.valueOf(update.getMessage().getText().substring(7));
             Port port = portService.getPort(destinationId);
+            if (playerService.getPlayerLocation(player.getId()).equals(port.getId())) {
+                return Message.makeReplyMessage(update, Message.getAlreadyHereMessage(port),
+                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+            }
+            if (port == null) {
+                return Message.makeReplyMessage(update, Message.getNoSuchPortMessage(),
+                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+            }
+            if (!port.getOwner().equals(player.getTeam())) {
+                return Message.makeReplyMessage(update, Message.getTradeEnemyPort(),
+                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+            }
             if (playerService.arrive(player, port)) {
                 Long gold = 50L;
                 playerService.giveGold(player, gold);
