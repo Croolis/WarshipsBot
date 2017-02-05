@@ -24,7 +24,6 @@ public class ChooseTeamHandler implements Handler {
         this.playerService = playerService;
     }
 
-    private List<Team> teams = Arrays.asList(Team.values());
     @Override
     public boolean matchCommand(Update update) {
         return playerService.getPlayer(update.getMessage().getFrom().getId()) == null;
@@ -34,15 +33,18 @@ public class ChooseTeamHandler implements Handler {
     public SendMessage handle(Update update) {
         Integer userID = update.getMessage().getFrom().getId();
         String nickname = update.getMessage().getFrom().getUserName();
-
-        try {
-            Team team = Team.valueOf(update.getMessage().getText());
+        String message = update.getMessage().getText();
+        List<String> teamNames = Arrays.stream(Team.values())
+                .map(Team::toString)
+                .collect(Collectors.toList());
+        if (teamNames.contains(message)) {
+            Team team = Team.valueOf(message);
             playerService.createPlayer(userID, nickname, team);
             return Message.makeReplyMessage(update, Message.getJoinTeamMessage(team),
                     Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
-        } catch (IllegalArgumentException e) {
-            return Message.makeReplyMessage(update, Message.getSelectTeamMessage(teams),
-                    Keyboard.getKeyboard(teams.stream().map(Enum::toString).collect(Collectors.toList())));
+        } else {
+            return Message.makeReplyMessage(update, Message.getSelectTeamMessage(Arrays.asList(Team.values())),
+                    Keyboard.getKeyboard(teamNames));
         }
     }
 }
