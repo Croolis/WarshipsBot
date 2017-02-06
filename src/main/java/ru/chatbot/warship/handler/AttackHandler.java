@@ -51,7 +51,7 @@ public class AttackHandler implements Handler {
     public SendMessage handle(Update update) {
         Integer userId = update.getMessage().getFrom().getId();
         Player player = playerService.getPlayer(userId);
-        Integer destinationId = Integer.valueOf(update.getMessage().getText().substring(7));
+        Integer destinationId = Integer.valueOf(update.getMessage().getText().substring(8));
         Port port = portService.getPort(destinationId);
         if (playerService.getPlayerLocation(player.getId()).equals(port.getId())) {
             return Message.makeReplyMessage(update, Message.getAlreadyHereMessage(port),

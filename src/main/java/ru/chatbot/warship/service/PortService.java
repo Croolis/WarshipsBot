@@ -58,12 +58,7 @@ public class PortService {
 
     public List<Port> getEnemyPorts(Integer portId, Team team) {
         try {
-            return jdbcTemplate.queryForList(GET_ENEMNY_PORTS_SQL, new Object[]{portId, portId, team.getTeamId()}).stream()
-                    .map(rs -> {
-                        return new Port((Integer)rs.get("ID"), (String)rs.get("NAME"), (Integer)rs.get("X"),
-                                (Integer)rs.get("Y"), Team.valueOf((Integer)rs.get("OWNER")),
-                                (Integer)rs.get("DISTANCE"), (Integer)rs.get("REWARD"));
-                    }).collect(Collectors.toList());
+            return jdbcTemplate.query(GET_ENEMNY_PORTS_SQL, new Object[]{portId, portId, team.getTeamId()}, new Port.PortWithDistanceRowMapper());
         } catch (DataAccessException e) {
             return null;
         }
@@ -71,12 +66,7 @@ public class PortService {
 
     public List<Port> getAllyPorts(Integer portId, Team team) {
         try {
-            return jdbcTemplate.queryForList(GET_ALLY_PORTS_SQL, new Object[]{portId, portId, team.getTeamId()}).stream()
-                    .map(rs -> {
-                        return new Port((Integer)rs.get("ID"), (String)rs.get("NAME"), (Integer)rs.get("X"),
-                                (Integer)rs.get("Y"), Team.valueOf((Integer)rs.get("OWNER")),
-                                (Integer)rs.get("DISTANCE"), (Integer)rs.get("REWARD"));
-                    }).collect(Collectors.toList());
+            return jdbcTemplate.query(GET_ALLY_PORTS_SQL, new Object[]{portId, portId, team.getTeamId()}, new Port.PortWithDistanceRowMapper());
         } catch (DataAccessException e) {
             return null;
         }
