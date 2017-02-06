@@ -1,11 +1,9 @@
 package ru.chatbot.warship.entity;
 
-import org.hsqldb.HsqlDateTime;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 /**
@@ -16,10 +14,11 @@ public class Voyage {
     private Integer leaderId;
     private Timestamp startTime;
     private Timestamp finishTime;
+    private Integer finished;
     private Integer type; // TODO:should be VoyageType
     private Integer reward;
 
-    Voyage(Integer playerId, Integer leaderId, Timestamp startTime, Timestamp finishTime, Boolean finished, Integer type, Integer reward) {
+    Voyage(Integer playerId, Integer leaderId, Timestamp startTime, Timestamp finishTime, Integer finished, Integer type, Integer reward) {
         this.playerId = playerId;
         this.leaderId = leaderId;
         this.finishTime = finishTime;
@@ -28,15 +27,13 @@ public class Voyage {
         this.type = type;
         this.reward = reward;
     }
-    public Boolean getFinished() {
+    public Integer getFinished() {
         return finished;
     }
 
-    public void setFinished(Boolean finished) {
+    public void setFinished(Integer finished) {
         this.finished = finished;
     }
-
-    private Boolean finished;
 
     public Integer getPlayerId() {
         return playerId;
@@ -95,8 +92,8 @@ public class Voyage {
         public Voyage mapRow(ResultSet rs, int rowNum) {
             try {
                 return new Voyage(rs.getInt("PLAYER_ID"), rs.getInt("LEADER_ID"),
-                        rs.getTimestamp("START_TIME"), rs.getTimestamp("FINISH_TIME"),
-                        rs.getBoolean("FINISHED"), rs.getInt("TYPE"), rs.getInt("REWARD"));
+                        rs.getTimestamp("START_DATE"), rs.getTimestamp("FINISH_DATE"),
+                        rs.getInt("FINISHED"), rs.getInt("TYPE"), rs.getInt("REWARD"));
             } catch (SQLException e) {
                 return null;
             }
