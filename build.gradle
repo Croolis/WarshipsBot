@@ -17,9 +17,14 @@ repositories {
 dependencies {
     compile 'org.telegram:telegrambots:2.4.4'
 
+    compile 'org.springframework:spring-core:4.3.6.RELEASE'
     compile 'org.springframework:spring-context:4.3.6.RELEASE'
+    compile 'org.springframework:spring-context-support:4.3.6.RELEASE'
     compile 'org.springframework:spring-core:4.3.6.RELEASE'
     compile 'org.springframework:spring-jdbc:4.3.6.RELEASE'
+    compile 'org.springframework:spring-web:4.3.6.RELEASE'
+
+    compile 'org.quartz-scheduler:quartz:2.2.1'
 
     compile 'hsqldb:hsqldb:1.8.0.10'
 

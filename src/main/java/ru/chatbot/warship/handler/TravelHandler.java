@@ -10,6 +10,7 @@ import ru.chatbot.warship.resources.Message;
 import ru.chatbot.warship.service.PlayerService;
 import ru.chatbot.warship.service.PortService;
 import ru.chatbot.warship.service.ShipService;
+import ru.chatbot.warship.service.VoyageService;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -41,6 +42,13 @@ public class TravelHandler implements Handler {
         this.portService = portService;
     }
 
+    @Autowired
+    private VoyageService voyageService;
+
+    public void setVoyageService(VoyageService voyageService) {
+        this.voyageService = voyageService;
+    }
+
     @Override
     public boolean matchCommand(Update update) {
         return travelPattern.matcher(update.getMessage().getText()).matches();
@@ -66,13 +74,8 @@ public class TravelHandler implements Handler {
                     Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
         }
         try {
-            if (playerService.arrive(player, port)) {
-                return Message.makeReplyMessage(update, Message.getArrivalMessage(port),
-                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
-            } else {
-                return Message.makeReplyMessage(update, Message.getPortTakenBeforeArrivalMessage(port),
-                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
-            }
+            voyageService.createTravel(player, playerService.getPlayerLocation(player.getId()), destinationId);
+            return Message.makeReplyMessage(update, Message.getTravelStartedMessage());
         } catch (IllegalArgumentException e) {
             return Message.makeReplyMessage(update, Message.getSorryMessage());
         }

@@ -6,12 +6,14 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class Player {
     Integer id;
+    Long chatId;
     String nickname;
     Team team;
     Long gold;
 
-    public Player(Integer id, String nickname, Team team, Long gold) {
+    public Player(Integer id, Long chatId, String nickname, Team team, Long gold) {
         this.id = id;
+        this.chatId = chatId;
         this.nickname = nickname;
         this.team = team;
         this.gold = gold;
@@ -23,6 +25,14 @@ public class Player {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     public String getNickname() {
@@ -55,8 +65,9 @@ public class Player {
 
         public Player mapRow(ResultSet rs, int rowNum) {
             try {
-                return new Player(rs.getInt("ID"), rs.getString("NICKNAME"),
-                        Team.valueOf(rs.getInt("TEAM")), rs.getLong("GOLD"));
+                return new Player(rs.getInt("ID"), rs.getLong("CHAT_ID"),
+                        rs.getString("NICKNAME"), Team.valueOf(rs.getInt("TEAM")),
+                        rs.getLong("GOLD"));
             } catch (SQLException e) {
                 return null;
             }

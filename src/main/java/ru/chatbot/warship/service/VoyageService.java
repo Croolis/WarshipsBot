@@ -37,6 +37,19 @@ public class VoyageService {
     private final static String PREPARE_TO_DELETE_ARRIVED_PLAYERS_SQL = "update VOYAGE set FINISHED = 2 " +
             "where (FINISHED = 1)";
 
+    private final static String START_ARRIVED_TRAVELERS_HANDLING_SQL = "update TRAVEL set STATUS = 1 " +
+            "where FINISH_DATE < now() and STATUS = 0";
+
+    private final static String GET_ARRIVED_TRAVELERS_SQL = "select PLAYER_ID, START_DATE, FINISH_DATE, DESTINATION from TRAVEL " +
+            "where STATUS = 1";
+
+    private final static String FINISH_ARRIVED_TRAVELERS_HANDLING_SQL = "update TRAVEL set STATUS = 2 " +
+            "where STATUS = 1";
+
+    private final static String CREATE_TRAVEL_SQL = "insert into TRAVEL " +
+            "(PLAYER_ID, START_DATE, FINISH_DATE, DESTINATION, STATUS) " +
+            "values(?, now(), now(), ?, 0)";
+
     public Voyage getVoyage(Player player) {
         try {
             return jdbcTemplate.queryForObject(GET_VOYAGE_BY_ID_SQL, new Object[]{player.getId()}, new Voyage.VoyageRowMapper());
@@ -68,5 +81,26 @@ public class VoyageService {
         } catch (DataAccessException e) {
             return null;
         }
+    }
+
+    public List<Voyage> startHandlingArrivedTravelers() {
+        try {
+            jdbcTemplate.update(START_ARRIVED_TRAVELERS_HANDLING_SQL);
+            return jdbcTemplate.queryForList(GET_ARRIVED_TRAVELERS_SQL).stream()
+                    .map(rs -> new Voyage((Integer) rs.get("PLAYER_ID"), (Integer) rs.get("DESTINATION"),
+                            (Timestamp) rs.get("START_DATE"),(Timestamp) rs.get("FINISH_DATE")))
+                    .collect(Collectors.toList());
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    public void createTravel(Player player, Integer from, Integer to) {
+        jdbcTemplate.update(CREATE_TRAVEL_SQL, player.getId(), to);
+        // TODO: calc FINISH_DATE by DISTANCE from ROUTE table and SPEED from SHIP table
+    }
+
+    public void finishHandlingArrivedTravelers() {
+        jdbcTemplate.update(FINISH_ARRIVED_TRAVELERS_HANDLING_SQL);
     }
 }

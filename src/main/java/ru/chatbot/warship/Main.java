@@ -20,10 +20,10 @@ public class Main {
         ApiContextInitializer.init();
         TelegramBotsApi botsApi = new TelegramBotsApi();
 
-        try {
-            ApplicationContext context =
-                    new ClassPathXmlApplicationContext("bean.xml");
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("bean.xml", "schedule.xml");
 
+        try {
             WarshipBot warshipBot = (WarshipBot) context.getBean("warshipBot");
             botsApi.registerBot(warshipBot);
         } catch (TelegramApiException e) {

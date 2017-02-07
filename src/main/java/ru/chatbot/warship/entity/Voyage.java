@@ -12,11 +12,19 @@ import java.sql.Timestamp;
 public class Voyage {
     private Integer playerId;
     private Integer leaderId;
+    private Integer destination;
     private Timestamp startTime;
     private Timestamp finishTime;
     private Integer finished;
     private Integer type; // TODO:should be VoyageType
     private Integer reward;
+
+    public Voyage(Integer playerId, Integer destination, Timestamp startTime, Timestamp finishTime) {
+        this.playerId = playerId;
+        this.destination = destination;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
+    }
 
     Voyage(Integer playerId, Integer leaderId, Timestamp startTime, Timestamp finishTime, Integer finished, Integer type, Integer reward) {
         this.playerId = playerId;
@@ -41,6 +49,14 @@ public class Voyage {
 
     public void setPlayerId(Integer playerId) {
         this.playerId = playerId;
+    }
+
+    public Integer getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Integer destination) {
+        this.destination = destination;
     }
 
     public Integer getLeaderId() {
