@@ -34,8 +34,8 @@ public class PlayerService {
         this.portService = portService;
     }
 
-    private static final String GET_PLAYER_BY_ID_SQL = "select ID, NICKNAME, TEAM, GOLD from PLAYER where ID = ?";
-    private static final String INSERT_PLAYER_SQL = "insert into PLAYER (ID, NICKNAME, TEAM, GOLD) values(?, ?, ?, 0)";
+    private static final String GET_PLAYER_BY_ID_SQL = "select ID, CHAT_ID, NICKNAME, TEAM, GOLD from PLAYER where ID = ?";
+    private static final String INSERT_PLAYER_SQL = "insert into PLAYER (ID, CHAT_ID, NICKNAME, TEAM, GOLD) values(?, ?, ?, ?, 0)";
     private static final String CHECK_ARRIVAL_SQL = "select * from " +
             "(select TEAM from PLAYER where ID = ?) a, " +
             "(select OWNER from PORT where ID = ?) b";
@@ -53,8 +53,8 @@ public class PlayerService {
         }
     }
 
-    public void createPlayer(Integer userId, String nickname, Team team) throws DataAccessException {
-        jdbcTemplate.update(INSERT_PLAYER_SQL, new Object[]{userId, nickname, team.getTeamId()});
+    public void createPlayer(Integer userId, Long chatId, String nickname, Team team) throws DataAccessException {
+        jdbcTemplate.update(INSERT_PLAYER_SQL, new Object[]{userId, chatId, nickname, team.getTeamId()});
         shipService.createShip("My first ship", userId, DEFAULT_SHIP_ID, getPlayerLocation(userId));
     }
 

@@ -18,6 +18,7 @@
 
     <jdbc:embedded-database id="dataSource">
         <jdbc:script location="classpath:schema.sql"/>
+        <jdbc:script location="classpath:quartz.sql"/>
         <jdbc:script location="classpath:data.sql"/>
     </jdbc:embedded-database>
 
@@ -33,6 +34,11 @@
     <bean id="shipService" class="ru.chatbot.warship.service.ShipService">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
+
+    <bean id="voyageService" class="ru.chatbot.warship.service.VoyageService">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
 
     <bean id="portService" class="ru.chatbot.warship.service.PortService">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
@@ -109,5 +115,12 @@
                 <!--Don't place anything below it!-->
             </list>
         </constructor-arg>
+    </bean>
+
+    <bean id="processArrivalsJob" class="ru.chatbot.warship.job.ProcessArrivalsJob">
+        <property name="warshipBot" ref="warshipBot"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="portService" ref="portService"/>
+        <property name="voyageService" ref="voyageService"/>
     </bean>
 </beans>

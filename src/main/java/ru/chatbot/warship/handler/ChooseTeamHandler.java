@@ -39,7 +39,7 @@ public class ChooseTeamHandler implements Handler {
                 .collect(Collectors.toList());
         if (teamNames.contains(message)) {
             Team team = Team.valueOf(message);
-            playerService.createPlayer(userID, nickname, team);
+            playerService.createPlayer(userID, update.getMessage().getChatId(), nickname, team);
             return Message.makeReplyMessage(update, Message.getJoinTeamMessage(team),
                     Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
         } else {
