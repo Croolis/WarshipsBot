@@ -73,5 +73,26 @@ public class ProcessArrivalsJob extends QuartzJobBean {
             }
         }
         voyageService.finishHandlingArrivedTravelers();
+
+        List<Voyage> arrivedTraders = voyageService.startHandlingArrivedTraders();
+        for (Voyage voyage : arrivedTraders) {
+            Player player = playerService.getPlayer(voyage.getPlayerId());
+            Port port = portService.getPort(voyage.getDestination());
+            SendMessage message;
+            if (playerService.arrive(player, port)) {
+                playerService.giveGold(player, Long.valueOf(voyage.getReward()));
+                message = Message.makeReplyMessage(player.getChatId(), Message.getArrivalTradeMessage(port, Long.valueOf(voyage.getReward())),
+                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+            } else {
+                message = Message.makeReplyMessage(player.getChatId(), Message.getPortTakenBeforeArrivalMessage(port),
+                        Keyboard.getKeyboard(Arrays.asList("INFO", "VOYAGE")));
+            }
+            try {
+                warshipBot.sendMessage(message);
+            } catch (TelegramApiException e) {
+
+            }
+        }
+        voyageService.finishHandlingArrivedTraders();
     }
 }

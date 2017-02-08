@@ -24,7 +24,10 @@ public class VoyageService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final static String GET_DISTANCE_SQL = "select DISTANCE from ROUTE where (TO_PORT = ?) and (FROM_PORT = ?)";
+    private final static String GET_DISTANCE_SQL = "select FROM_PORT, TO_PORT, DISTANCE, REWARD from ROUTE " +
+            "where ((TO_PORT = ?) and (FROM_PORT = ?)) " +
+            "or " +
+            "((FROM_PORT = ?) and (TO_PORT = ?))";
 
     private final static String GET_VOYAGE_BY_ID_SQL = "select PLAYER_ID, LEADER_ID, START_DATE, FINISH_DATE, " +
             "FINISHED, TYPE, REWARD from VOYAGE where PLAYER_ ID = ?";
@@ -44,15 +47,29 @@ public class VoyageService {
     private final static String START_ARRIVED_TRAVELERS_HANDLING_SQL = "update TRAVEL set STATUS = 1 " +
             "where FINISH_DATE < now() and STATUS = 0";
 
+    private final static String START_ARRIVED_TRADERS_HANDLING_SQL = "update TRADE set STATUS = 1 " +
+            "where FINISH_DATE < now() and STATUS = 0";
+
     private final static String GET_ARRIVED_TRAVELERS_SQL = "select PLAYER_ID, START_DATE, FINISH_DATE, DESTINATION from TRAVEL " +
+            "where STATUS = 1";
+
+    private final static String GET_ARRIVED_TRADERS_SQL = "select PLAYER_ID, START_DATE, FINISH_DATE, DESTINATION " +
+            "from TRADE " +
             "where STATUS = 1";
 
     private final static String FINISH_ARRIVED_TRAVELERS_HANDLING_SQL = "update TRAVEL set STATUS = 2 " +
             "where STATUS = 1";
 
+    private final static String FINISH_ARRIVED_TRADERS_HANDLING_SQL = "update TRADE set STATUS = 2 " +
+            "where STATUS = 1";
+
     private final static String CREATE_TRAVEL_SQL = "insert into TRAVEL " +
             "(PLAYER_ID, START_DATE, FINISH_DATE, DESTINATION, STATUS) " +
             "values(?, now(), DATE_ADD(now(), ? MINUTE), ?, 0)";
+
+    private final static String CREATE_TRADE_SQL = "insert into TRADE " +
+            "(PLAYER_ID, LEADER_ID, START_DATE, FINISH_DATE, REWARD, DESTINATION, STATUS) " +
+            "values(?, ?, now(), DATE_ADD(now(), ? MINUTE), ?, ?, 0)";
 
     public static Long calculateRouteTime(Long distance, Ship ship) {
         return distance / ship.getSpeed();
@@ -96,7 +113,7 @@ public class VoyageService {
             jdbcTemplate.update(START_ARRIVED_TRAVELERS_HANDLING_SQL);
             return jdbcTemplate.queryForList(GET_ARRIVED_TRAVELERS_SQL).stream()
                     .map(rs -> new Voyage((Integer) rs.get("PLAYER_ID"), (Integer) rs.get("DESTINATION"),
-                            (Timestamp) rs.get("START_DATE"),(Timestamp) rs.get("FINISH_DATE")))
+                            (Timestamp) rs.get("START_DATE"), (Timestamp) rs.get("FINISH_DATE")))
                     .collect(Collectors.toList());
         } catch (DataAccessException e) {
             return null;
@@ -106,8 +123,8 @@ public class VoyageService {
     public void createTravel(Player player, Integer from, Integer to) {
         try {
             Ship ship = shipService.getEmployedShip(player.getId());
-            Long distance = jdbcTemplate.queryForObject(GET_DISTANCE_SQL, new Object[]{from, to}, Long.class);
-            Long routeTime = calculateRouteTime(distance, ship);
+            Route route = jdbcTemplate.queryForObject(GET_DISTANCE_SQL, new Object[]{from, to, from, to}, new Route.RouteRowMapper());
+            Long routeTime = calculateRouteTime(route.getDistance(), ship);
             jdbcTemplate.update(CREATE_TRAVEL_SQL, player.getId(), routeTime, to);
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -117,4 +134,33 @@ public class VoyageService {
     public void finishHandlingArrivedTravelers() {
         jdbcTemplate.update(FINISH_ARRIVED_TRAVELERS_HANDLING_SQL);
     }
+
+    public List<Voyage> startHandlingArrivedTraders() {
+        try {
+            jdbcTemplate.update(START_ARRIVED_TRADERS_HANDLING_SQL);
+            return jdbcTemplate.queryForList(GET_ARRIVED_TRADERS_SQL).stream()
+                    .map(rs -> new Voyage((Integer) rs.get("PLAYER_ID"), (Integer) rs.get("LEADER_ID"),
+                            (Integer) rs.get("DESTINATION"), (Timestamp) rs.get("START_DATE"),
+                            (Timestamp) rs.get("FINISH_DATE"), (Integer) rs.get("REWARD")))
+                    .collect(Collectors.toList());
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    public void createTrade(Player player, Player leader, Integer from, Integer to) {
+        try {
+            Ship ship = shipService.getEmployedShip(player.getId());
+            Route route = jdbcTemplate.queryForObject(GET_DISTANCE_SQL, new Object[]{from, to, from, to}, new Route.RouteRowMapper());
+            Long routeTime = calculateRouteTime(route.getDistance(), ship);
+            jdbcTemplate.update(CREATE_TRADE_SQL, player.getId(), leader.getId(), routeTime, route.getReward(), to);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void finishHandlingArrivedTraders() {
+        jdbcTemplate.update(FINISH_ARRIVED_TRADERS_HANDLING_SQL);
+    }
+
 }
