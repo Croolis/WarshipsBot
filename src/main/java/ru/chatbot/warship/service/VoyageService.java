@@ -17,10 +17,14 @@ public class VoyageService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private ShipService shipService;
+
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private final static String GET_DISTANCE_SQL = "select DISTANCE from ROUTE where (TO_PORT = ?) and (FROM_PORT = ?)";
 
     private final static String GET_VOYAGE_BY_ID_SQL = "select PLAYER_ID, LEADER_ID, START_DATE, FINISH_DATE, " +
             "FINISHED, TYPE, REWARD from VOYAGE where PLAYER_ ID = ?";
@@ -48,7 +52,11 @@ public class VoyageService {
 
     private final static String CREATE_TRAVEL_SQL = "insert into TRAVEL " +
             "(PLAYER_ID, START_DATE, FINISH_DATE, DESTINATION, STATUS) " +
-            "values(?, now(), now(), ?, 0)";
+            "values(?, now(), DATE_ADD(now(), ? MINUTE), ?, 0)";
+
+    public static Long calculateRouteTime(Long distance, Ship ship) {
+        return distance / ship.getSpeed();
+    }
 
     public Voyage getVoyage(Player player) {
         try {
@@ -96,8 +104,14 @@ public class VoyageService {
     }
 
     public void createTravel(Player player, Integer from, Integer to) {
-        jdbcTemplate.update(CREATE_TRAVEL_SQL, player.getId(), to);
-        // TODO: calc FINISH_DATE by DISTANCE from ROUTE table and SPEED from SHIP table
+        try {
+            Ship ship = shipService.getEmployedShip(player.getId());
+            Long distance = jdbcTemplate.queryForObject(GET_DISTANCE_SQL, new Object[]{from, to}, Long.class);
+            Long routeTime = calculateRouteTime(distance, ship);
+            jdbcTemplate.update(CREATE_TRAVEL_SQL, player.getId(), routeTime, to);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void finishHandlingArrivedTravelers() {
