@@ -19,11 +19,22 @@ public class Voyage {
     private Integer type; // TODO:should be VoyageType
     private Integer reward;
 
+    // for travel
     public Voyage(Integer playerId, Integer destination, Timestamp startTime, Timestamp finishTime) {
         this.playerId = playerId;
         this.destination = destination;
         this.startTime = startTime;
         this.finishTime = finishTime;
+    }
+
+    // for trade
+    public Voyage(Integer playerId, Integer leaderId, Integer destination, Timestamp startTime, Timestamp finishTime, Integer reward) {
+        this.playerId = playerId;
+        this.leaderId = leaderId;
+        this.destination = destination;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
+        this.reward = reward;
     }
 
     Voyage(Integer playerId, Integer leaderId, Timestamp startTime, Timestamp finishTime, Integer finished, Integer type, Integer reward) {
