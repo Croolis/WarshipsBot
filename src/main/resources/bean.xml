@@ -81,6 +81,10 @@
 
     <bean id="defaultHandler" class="ru.chatbot.warship.handler.DefaultHandler"/>
 
+    <bean id="changeNicknameHandler" class="ru.chatbot.warship.handler.ChangeNicknameHandler">
+        <property name="playerService" ref="playerService"/>
+    </bean>
+
     <bean id="warshipBot" class="ru.chatbot.warship.bot.WarshipBot" />
 
     <bean id="handlers" class="java.util.ArrayList">
@@ -99,6 +103,7 @@
                 <ref bean="tradeHandler"/>
                 <ref bean="travelPreparationHandler"/>
                 <ref bean="travelHandler"/>
+                <ref bean="changeNicknameHandler"/>
                 <ref bean="defaultHandler"/>
                 <!--This handler must be the last one!-->
                 <!--Don't place anything below it!-->

@@ -41,6 +41,7 @@ public class PlayerService {
             "(select OWNER from PORT where ID = ?) b";
     private static final String INCREASE_GOLD_SQL = "update PLAYER set GOLD = GOLD + ? " +
             "where ID = ?";
+    private static final String CHANGE_NICKNAME_SQL = "update PLAYER set NICKNAME = ? where ID = ?";
 
     private static final Long DEFAULT_SHIP_ID = 0L;
 
@@ -101,5 +102,9 @@ public class PlayerService {
 
     public void giveGold(Player player, Long gold) {
         jdbcTemplate.update(INCREASE_GOLD_SQL, new Object[]{gold, player.getId()});
+    }
+
+    public void setNickname(Integer playerId, String nickname) {
+        jdbcTemplate.update(CHANGE_NICKNAME_SQL, nickname, playerId);
     }
 }

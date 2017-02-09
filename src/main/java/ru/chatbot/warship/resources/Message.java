@@ -118,6 +118,22 @@ public class Message {
         return msg;
     }
 
+    public static String getTravelStartedMessage() {
+        return "Your travel has been was pios began gon gen";
+    }
+
+    public static String getTradeStartedMessage() {
+        return "Your trade has been was pios began gon gen";
+    }
+
+    public static String getChangeNicknameMessage(String nickname) {
+        return "Your nickname successfully changed to " + nickname;
+    }
+
+    public static SendMessage makeReplyMessage(Long chatId, String message, ReplyKeyboard keyboard) {
+        return new SendMessage().setChatId(chatId).setText(message).setReplyMarkup(keyboard);
+    }
+
     public static SendMessage makeReplyMessage(Update update, String message) {
         return new SendMessage().setChatId(update.getMessage().getChatId()).setText(message);
     }
