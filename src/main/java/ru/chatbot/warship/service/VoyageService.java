@@ -65,11 +65,11 @@ public class VoyageService {
 
     private final static String CREATE_TRAVEL_SQL = "insert into TRAVEL " +
             "(PLAYER_ID, START_DATE, FINISH_DATE, DESTINATION, STATUS) " +
-            "values(?, now(), DATE_ADD(now(), ? MINUTE), ?, 0)";
+            "values(?, now(), DATEADD('MINUTE', ?, NOW()), ?, 0)";
 
     private final static String CREATE_TRADE_SQL = "insert into TRADE " +
             "(PLAYER_ID, LEADER_ID, START_DATE, FINISH_DATE, REWARD, DESTINATION, STATUS) " +
-            "values(?, ?, now(), DATE_ADD(now(), ? MINUTE), ?, ?, 0)";
+            "values(?, ?, now(), DATEADD('MINUTE', ?, NOW()), ?, ?, 0)";
 
     public static Long calculateRouteTime(Long distance, Ship ship) {
         return distance / ship.getSpeed();

@@ -45,8 +45,8 @@ public class PortService {
             ") " +
             "AND p.OWNER = ?";
 
-    private static final Integer DEFAULT_LOCATION_BRITAIN = 1;
-    private static final Integer DEFAULT_LOCATION_SPAIN = 2;
+    private static final Integer DEFAULT_LOCATION_BRITAIN = 2;
+    private static final Integer DEFAULT_LOCATION_SPAIN = 3;
 
     public Port getPort(Integer id) {
         try {
