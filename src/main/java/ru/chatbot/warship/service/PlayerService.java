@@ -43,7 +43,7 @@ public class PlayerService {
             "where ID = ?";
     private static final String CHANGE_NICKNAME_SQL = "update PLAYER set NICKNAME = ? where ID = ?";
 
-    private static final Long DEFAULT_SHIP_ID = 0L;
+    private static final Long DEFAULT_SHIP_ID = 1L;
 
     public Player getPlayer(Integer id) {
         try {
