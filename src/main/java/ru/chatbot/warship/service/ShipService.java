@@ -40,6 +40,8 @@ public class ShipService {
 
     private final static String UPDATE_LOCATION_SQL = "update SHIP set LOCATION = ? " +
             "where OWNER_ID = ? and EMPLOYED = 1";
+    private final static String RENAME_SHIP_SQL = "update SHIP set NAME = ? " +
+            "where OWNER_ID = ? and EMPLOYED = 1";
 
     public Ship getShip(Long id) {
         try {
@@ -72,5 +74,9 @@ public class ShipService {
 
     public void changeLocation(Player player, Port port) {
         jdbcTemplate.update(UPDATE_LOCATION_SQL, new Object[]{port.getId(), player.getId()});
+    }
+
+    public void renameShip(Integer playerId, String name) {
+        jdbcTemplate.update(RENAME_SHIP_SQL, new Object[]{name, playerId});
     }
 }

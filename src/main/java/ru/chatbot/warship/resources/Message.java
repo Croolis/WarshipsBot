@@ -130,6 +130,10 @@ public class Message {
         return "Your nickname successfully changed to " + nickname;
     }
 
+    public static String getChangeShipNameMessage(String name) {
+        return "You renamed ship to " + name;
+    }
+
     public static SendMessage makeReplyMessage(Long chatId, String message, ReplyKeyboard keyboard) {
         return new SendMessage().setChatId(chatId).setText(message).setReplyMarkup(keyboard);
     }
